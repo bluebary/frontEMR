@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>국방병무정보시스템 (K-MIMS)</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="brand">
+            <span class="logo-icon">M</span>
+            <h1>국방병무정보시스템 (K-MIMS)</h1>
+        </div>
+        <nav class="top-nav">
+            <button class="nav-btn active">신체검사 1실 (내과)</button>
+            <button class="nav-btn">신체검사 2실 (정형외과)</button>
+            <button class="nav-btn">심리검사</button>
+        </nav>
+        <div class="user-status">
+            <span class="status-indicator">ON</span>
+            <span>김철수 수석검사관</span>
+        </div>
+    </header>
+
+    <!-- 4-Column Layout -->
+    <div class="emr-container">
+
+        <!-- 1. Patient List -->
+        <aside class="col-list">
+            <div class="panel-header">
+                <h2>수검자 대기 (12)</h2>
+                <button class="icon-btn tiny">refresh</button>
+            </div>
+            <div class="search-box"><input type="text" placeholder="주민번호/이름 검색" /></div>
+            <ul class="patient-list"></ul>
+            <div class="memo-area">
+                <div class="panel-header-sub">검사관 메모</div>
+                <textarea placeholder="특이사항 기록..."></textarea>
+            </div>
+        </aside>
+
+        <div class="gutter" data-prev="col-list" data-next="col-main"></div>
+
+        <!-- 2. Medical Record (SOAP + Order) -->
+        <main class="col-main">
+            <div class="patient-bar">
+                <div class="p-basic">
+                    <span class="p-name" id="p-name">-</span>
+                    <span class="p-meta" id="p-meta">-/-</span>
+                </div>
+                <div class="p-vitals">
+                    <span>BMI 24.5</span> <span>BP 128/82</span> <span>시력 1.0/0.8</span>
+                </div>
+            </div>
+
+            <div class="soap-container">
+                <div class="panel-header-small">병무 진단 기록 (SOAP)</div>
+                <div class="soap-editor">
+                    <div class="soap-row"><label>CC</label><input type="text"
+                            value="재발성 어깨 탈구 (Recurrent shoulder dislocation)" /></div>
+                    <div class="soap-row flex-grow"><label>S/O</label><textarea>과거력: 2년 전 운동 중 최초 탈구. 이후 3회 추가 탈구 병력.
+제출된 외부 MRI상 Bankart lesion 관찰됨.
+ROM 제한 소견 있음.</textarea></div>
+                    <div class="soap-row"><label>A</label><input type="text"
+                            value="Recurrent dislocation of shoulder region" /></div>
+                </div>
+            </div>
+
+            <div class="order-container">
+                <div class="panel-header-small">
+                    <span>정밀검사 오더 / 판정</span>
+                    <button class="btn-xs">상위법령조회</button>
+                </div>
+                <div class="order-list">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>검사코드</th>
+                                <th>검사명</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>MRI-S</td>
+                                <td>Shoulder MRI (조영제)</td>
+                                <td>영상판독완료</td>
+                            </tr>
+                            <tr>
+                                <td>ROM-T</td>
+                                <td>관절가동범위 측정</td>
+                                <td>완료 (제한있음)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="order-actions">
+                    <div class="total-cost">판정예측: 4급 (보충역)</div>
+                    <button class="btn-primary">판정 확정</button>
+                </div>
+            </div>
+        </main>
+
+        <div class="gutter" data-prev="col-main" data-next="col-pen"></div>
+
+        <!-- 3. Pen Chart -->
+        <aside class="col-pen reduced-width">
+            <div class="panel-header-small">
+                <span>신체주요도 (Body Chart)</span>
+                <div class="pen-tools">
+                    <button class="tool-btn active" data-color="#000">P</button>
+                    <button class="tool-btn" data-color="#f00" style="color:red">R</button>
+                    <button class="tool-btn" data-color="#00f" style="color:blue">B</button>
+                    <button class="tool-btn" id="clear-canvas">C</button>
+                </div>
+            </div>
+            <div class="canvas-wrapper">
+                <canvas id="penCanvas"></canvas>
+            </div>
+        </aside>
+
+        <div class="gutter" data-prev="col-pen" data-next="col-right-split"></div>
+
+        <!-- 4. Right Column: History & AI RAG (Restored) -->
+        <aside class="col-right-split">
+            <!-- Top: Medical History & Images -->
+            <div class="split-top history-panel">
+                <div class="panel-header-small">
+                    <span>진료 이력 / PACS</span>
+                    <button class="icon-btn tiny">filter_list</button>
+                </div>
+                <div class="history-list">
+                    <div class="history-item">
+                        <div class="h-date">2024.01.20 (토)</div>
+                        <div class="h-content">
+                            <div class="h-diag">J06.9 상세불명의 급성 상기도 감염</div>
+                            <div class="h-imgs">
+                                <div class="h-img"
+                                    style="background-image: url('https://placehold.co/100x100/e0e0e0/ffffff?text=Throat');">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="history-item">
+                        <div class="h-date">2023.11.05 (월)</div>
+                        <div class="h-content">
+                            <div class="h-diag">K21.0 위-식도역류병</div>
+                            <div class="h-imgs">
+                                <div class="h-img"
+                                    style="background-image: url('https://placehold.co/100x100/e0e0e0/ffffff?text=Endo');">
+                                </div>
+                                <div class="h-img"
+                                    style="background-image: url('https://placehold.co/100x100/e0e0e0/ffffff?text=X-Ray');">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="history-item">
+                        <div class="h-date">2023.05.12 (금)</div>
+                        <div class="h-content">
+                            <div class="h-diag">J30.4 상세불명의 알레르기 비염</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom: AI RAG Panel (Restored) -->
+            <div class="split-bottom llm-panel military-theme">
+                <div class="panel-header-small ai-header">
+                    <span><span class="material-icons prompt-icon">manage_search</span> AI 병역 판정 (RAG 검색 기반)</span>
+                    <span class="badge ai">RAG v2.0</span>
+                </div>
+                <div class="llm-content">
+                    <div class="grade-predict-banner">
+                        <span class="grade-label">AI 판정 예측</span>
+                        <span class="grade-badge g4">4급 (보충역)</span>
+                        <span class="confidence">일치율 98.5%</span>
+                    </div>
+
+                    <div class="rag-evidence">
+                        <div class="evidence-title">판정 근거 (Reference)</div>
+                        <ul class="citation-list">
+                            <li class="citation-item">
+                                <span class="cite-source">[검사규칙]</span>
+                                <span class="cite-text">제203조(불안정성 대관절) 1항 가목: 재발성 탈구로 수술적 치료가 필요한 경우</span>
+                                <button class="icon-btn-text"><span class="material-icons">open_in_new</span>
+                                    보기</button>
+                            </li>
+                            <li class="citation-item">
+                                <span class="cite-source">[판례]</span>
+                                <span class="cite-text">2023-구합-1029: Bankart 병변과 탈구 빈도에 따른 판정 적절성 확인</span>
+                                <button class="icon-btn-text"><span class="material-icons">open_in_new</span>
+                                    보기</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="ai-logic-summary">
+                        <strong>[종합 의견]</strong><br>
+                        제출된 MRI 영상 분석 결과(Vector DB 유사도 0.92)와 과거 진료 이력을 종합할 때, <u>검사규칙 제203조</u>에 부합함. 재발성 탈구 기록이 명확하여
+                        4급 처분이 타당한 것으로 사료됨.
+                    </div>
+
+                    <button class="btn-ai-redesign">
+                        <span class="material-icons">tune</span>
+                        판정 로직 / 근거 가중치 재설정
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+    <script type="module" src="/main.js"></script>
+</body>
+
+</html>

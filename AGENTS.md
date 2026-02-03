@@ -30,3 +30,6 @@
   - Do NOT create unnecessary `.md` files
   - When required, create only under `/Rules/` directory
   - Always ask user confirmation before creating
+
+## UI Design
+- Used MCP Stitch for UI design

@@ -64,19 +64,19 @@
             <div class="soap-container">
                 <div class="panel-header-small">병무 진단 기록 (SOAP)</div>
                 <div class="soap-editor">
-                    <div class="soap-row"><label>CC</label><input type="text"
+                    <div class="soap-row"><label>CC</label><input type="text" id="soap-cc"
                             value="재발성 어깨 탈구 (Recurrent shoulder dislocation)" /></div>
-                    <div class="soap-row flex-grow"><label>S/O</label><textarea>과거력: 2년 전 운동 중 최초 탈구. 이후 3회 추가 탈구 병력.
+                    <div class="soap-row flex-grow"><label>S/O</label><textarea id="soap-so">과거력: 2년 전 운동 중 최초 탈구. 이후 3회 추가 탈구 병력.
 제출된 외부 MRI상 Bankart lesion 관찰됨.
 ROM 제한 소견 있음.</textarea></div>
-                    <div class="soap-row"><label>A</label><input type="text"
+                    <div class="soap-row"><label>A</label><input type="text" id="soap-assessment"
                             value="Recurrent dislocation of shoulder region" /></div>
                 </div>
             </div>
 
             <div class="order-container">
                 <div class="panel-header-small">
-                    <span>정밀검사 오더 / 판정</span>
+                    <span id="order-title">정밀검사 오더 / 판정</span>
                     <button class="btn-xs">상위법령조회</button>
                 </div>
                 <div class="order-list">
@@ -88,7 +88,7 @@ ROM 제한 소견 있음.</textarea></div>
                                 <th>상태</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="order-table-body">
                             <tr>
                                 <td>MRI-S</td>
                                 <td>Shoulder MRI (조영제)</td>
@@ -137,14 +137,13 @@ ROM 제한 소견 있음.</textarea></div>
                     <span>진료 이력 / PACS</span>
                     <button class="icon-btn tiny">filter_list</button>
                 </div>
-                <div class="history-list">
+                <div class="history-list" id="history-list-container">
                     <div class="history-item">
                         <div class="h-date">2024.01.20 (토)</div>
                         <div class="h-content">
                             <div class="h-diag">J06.9 상세불명의 급성 상기도 감염</div>
                             <div class="h-imgs">
-                                <div class="h-img"
-                                    style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b1/Strep_throat_2010.JPG');">
+                                <div class="h-img" style="background-image: url('./img/throat_exam.png');">
                                 </div>
                             </div>
                         </div>
@@ -154,11 +153,9 @@ ROM 제한 소견 있음.</textarea></div>
                         <div class="h-content">
                             <div class="h-diag">K21.0 위-식도역류병</div>
                             <div class="h-imgs">
-                                <div class="h-img"
-                                    style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/87/Endoscopia.jpg');">
+                                <div class="h-img" style="background-image: url('./img/endoscopy.png');">
                                 </div>
-                                <div class="h-img"
-                                    style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/a/a1/Normal_posteroanterior_chest_x-ray.jpg');">
+                                <div class="h-img" style="background-image: url('./img/chest_xray.png');">
                                 </div>
                             </div>
                         </div>
@@ -181,8 +178,8 @@ ROM 제한 소견 있음.</textarea></div>
                 <div class="llm-content">
                     <div class="grade-predict-banner">
                         <span class="grade-label">AI 판정 예측</span>
-                        <span class="grade-badge g4">4급 (보충역)</span>
-                        <span class="confidence">일치율 98.5%</span>
+                        <span class="grade-badge g4" id="ai-grade">4급 (보충역)</span>
+                        <span class="confidence" id="ai-confidence">일치율 98.5%</span>
                     </div>
 
                     <div class="rag-evidence">
@@ -203,7 +200,7 @@ ROM 제한 소견 있음.</textarea></div>
                         </ul>
                     </div>
 
-                    <div class="ai-logic-summary">
+                    <div class="ai-logic-summary" id="ai-logic">
                         <strong>[종합 의견]</strong><br>
                         제출된 MRI 영상 분석 결과(Vector DB 유사도 0.92)와 과거 진료 이력을 종합할 때, <u>검사규칙 제203조</u>에 부합함. 재발성 탈구 기록이 명확하여
                         4급 처분이 타당한 것으로 사료됨.
@@ -218,6 +215,13 @@ ROM 제한 소견 있음.</textarea></div>
         </aside>
 
     </div>
+    <!-- Image Viewer Modal -->
+    <div id="imageModal" class="image-modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="expandedImg">
+        <div id="imgCaption"></div>
+    </div>
+
     <script type="module" src="/main.js"></script>
 </body>
 
